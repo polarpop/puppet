@@ -1,13 +1,16 @@
 {
-  "name": "@movement-mortgage/Scrappy",
+  "name": "@movement-mortgage/scrappy",
   "description": "A node.js implementation for performing web automation tasks using puppeteer",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "license": "MIT",
-  "repository": "git://github.com/polarpop/movement-webscrapers",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/polarpop/movement-scrappers.git"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "./node_modules/.bin/babel src --out-dir lib --copy-files"
+    "build": "babel src --out-dir lib --copy-files"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -31,9 +34,14 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/runtime": "^7.5.5",
     "@babel/runtime-corejs3": "^7.5.5",
-    "node-fetch": "^2.6.0",
-    "puppeteer": "^1.19.0",
-    "superstruct": "^0.6.1",
-    "uuid": "^3.3.2"
-  }
+    "puppeteer": "^1.19.0"
+  },
+  "bugs": {
+    "url": "https://github.com/polarpop/movement-scrappers/issues"
+  },
+  "homepage": "https://github.com/polarpop/movement-scrappers",
+  "directories": {
+    "lib": "lib"
+  },
+  "author": "polarpop"
 }
