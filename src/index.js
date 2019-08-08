@@ -1,7 +1,7 @@
 import { Manager as Browser } from './Browser';
 import { Manager as Pages } from './Page';
 
-
+/** @class Scrappy */
 exports.Scrappy = class Scrappy {
   /**
   * Creates the browser manager instance. Which has the property of 
