@@ -1,4 +1,9 @@
-
+/**
+* The valid steps that can be used from puppeteer. Not all of the page steps are included
+* in this array since some are not necessary for this application.
+*
+* @type {string[]}
+*/
 const VALID_STEP_METHODS = [
   '$',
   '$$',
@@ -64,10 +69,32 @@ const VALID_STEP_METHODS = [
   'workers'
 ];
 
+/** @class Steps */
 export class Manager {
 
+  /**
+  * The map for steps in the step instance.
+  *
+  * @property
+  *
+  * @type {Map<string, string[]|string>}
+  *
+  */
   steps = new Map();
 
+  /**
+  * Creates a property for this instance based on the `props` parameter,
+  * and sets the steps map for this instance.
+  *
+  * @param {Object[]<string, string[]|string>} steps A array of objects that have house the function
+  * name and arguments of that function from puppeteer.
+  *
+  * @param {Object<string, string>} props A object of properties you wish to include on this instance
+  * the value of each element must be a string.
+  *
+  * @returns {void}
+  *
+  */
   constructor([ ...steps ], { ...props }) {
     if ((Object.keys(props)).length > 0) {
       let entries = Object.entries(props);
@@ -82,6 +109,7 @@ export class Manager {
     this.#setSteps(steps);
   }
 
+  /** @private */
   #setSteps(steps=[]) {
     for (let i in steps) {
       let entry = Object.entries(steps[i]);
