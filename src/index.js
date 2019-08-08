@@ -1,7 +1,7 @@
 import { Manager as Browser } from './Browser';
 import { Manager as Pages } from './Page';
 
-
+/** @class Scrappy */
 class Scrappy {
   /**
   * Creates the browser manager instance. Which has the property of 
@@ -58,10 +58,21 @@ class Scrappy {
   * @private
   *
   */
-  #browserOpts;
+  #browserOpts = {};
 
+  /**
+  * Manages the puppeteer browser instance, can add pages, can delete pages,
+  * and can run the pages either by specific ID or all at once.
+  *
+  * @constructor
+  *
+  * @params {Object} browserOpts The options used for the puppeteer launch instance. See https://github.com/GoogleChrome/puppeteer
+  * for further details
+  *
+  * @returns {void}
+  *
+  */
   constructor({ ...browserOpts }) {
-    
     this.#browserOpts = browserOpts;
     this.pages = this.#PageManager.pages;
     this.browser = this.#BrowserManager.browser;
@@ -107,6 +118,43 @@ class Scrappy {
     this.#PageManager.add({ id, steps, props });
   }
 
+  /**
+  * Removes the page from the `PageManager` instance. When you use the `run` method next time,
+  * the page that was removed will not be run.
+  *
+  * @param {string} id The id of the page you want to remove.
+  *
+  * @returns {void}
+  *
+  * @example
+  *
+  * import uuid from 'uuid/v4';
+  * import Scrappy from '@movement-mortgage/Scrappy';
+  *
+  * const pageId = uuid();
+  * const steps = [{ goto: 'https://example.com' }, { type: [ '#browser', 'password' ] }];
+  *
+  * const props = { password: 'This is a dynamic value password' };
+  *
+  * const scrappy = new Scrappy({ headless: false });
+  *
+  * scrappy.addPage(pageId, steps, props);
+  *
+  * scrappy.run();
+  *
+  * // or
+  *
+  * scrappy.run(pageId);
+  *
+  * // Now let's remove the page
+  * scrappy.removePage(pageId);
+  *
+  * console.log(scrappy.pages.has(pageId)) // outputs false
+  *
+  * // That page will no longer appear.
+  * scrappy.run();
+  *
+  */
   removePage(id) {
     this.#PageManager.remove({ id });
   }
