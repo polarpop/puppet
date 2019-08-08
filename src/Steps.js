@@ -1,4 +1,69 @@
 
+const VALID_STEP_METHODS = [
+  '$',
+  '$$',
+  '$$eval',
+  '$eval',
+  '$x',
+  'accessibility',
+  'addScriptTag',
+  'addStyleTag',
+  'authenticate',
+  'bringToFront',
+  'browser',
+  'browserContext',
+  'click',
+  'close',
+  'content',
+  'cookies',
+  'coverage',
+  'deleteCookie',
+  'emulate',
+  'emulateMedia',
+  'evaluate',
+  'evaluateHandle',
+  'evaluateOnNewDocument',
+  'exposeFunction',
+  'focus',
+  'frames',
+  'goBack',
+  'goForward',
+  'goto',
+  'hover',
+  'isClosed',
+  'mainFrame',
+  'metrics',
+  'pdf',
+  'queryObjects',
+  'reload',
+  'screenshot',
+  'select',
+  'setBypassCSP',
+  'setCacheEnabled',
+  'setContent',
+  'setCookie',
+  'setDefaultNavigationTimeout',
+  'setDefaultTimeout',
+  'setExtraHTTPHeaders',
+  'setGeolocation',
+  'setRequestInterception',
+  'setUserAgent',
+  'tap',
+  'target',
+  'title',
+  'url',
+  'viewport',
+  'waitFor',
+  'waitForFileChooser',
+  'waitForFunction',
+  'waitForNavigation',
+  'waitForRequest',
+  'waitForResponse',
+  'waitForSelector',
+  'waitForXPath',
+  'workers'
+];
+
 export class Manager {
 
   steps = new Map();
@@ -40,7 +105,7 @@ export class Manager {
         } else if (typeof value === 'string') {
           v = [ `${value}` ];
         }
-        if (k && v) {
+        if (k && v && VALID_STEP_METHODS.includes(`${key}`)) {
           this.steps.set(k, v);
         }
         

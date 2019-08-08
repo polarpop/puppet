@@ -13,7 +13,7 @@ export class Manager {
   * @type {puppeteer~Browser|null}
   *
   */
-  browser;
+  browser = null;
 
   /**
   * The manager instance for opening and closing the
@@ -32,7 +32,7 @@ export class Manager {
   *
   * @param {Object} options The options you want to use to open the puppeteer instance.
   *
-  * @returns {Promise<void>}
+  * @returns {Promise<Browser.browser>}
   *
   * @example
   *
@@ -50,6 +50,7 @@ export class Manager {
     }
 
     this.browser = await puppeteer.launch(options);
+    return this.browser;
   }
 
   /**

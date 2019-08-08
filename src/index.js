@@ -227,8 +227,11 @@ class Scrappy {
   }
 }
 
+/** @exports {Pages} */
 exports.Pages = Pages;
 
+/** @exports {Browser} */
 exports.Browser = Browser;
 
+/** @exports {Scrappy} */
 exports.Scrappy = Scrappy;
