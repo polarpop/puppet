@@ -1,5 +1,5 @@
 {
-  "name": "@movement-mortgage/webscrapers",
+  "name": "@movement-mortgage/Scrappy",
   "description": "A node.js implementation for performing web automation tasks using puppeteer",
   "version": "0.0.1",
   "license": "MIT",
