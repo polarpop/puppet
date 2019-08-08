@@ -1,8 +1,8 @@
 import { Manager as Browser } from './Browser';
 import { Manager as Pages } from './Page';
 
-/** @class Scrappy */
-class Scrappy {
+
+exports.Scrappy = class Scrappy {
   /**
   * Creates the browser manager instance. Which has the property of 
   * `browser` as an alias for the puppeteer instance.
@@ -220,6 +220,3 @@ class Scrappy {
 exports.Pages = Pages;
 
 exports.Browser = Browser;
-
-/** @private */
-exports.Scrappy = Scrappy;
