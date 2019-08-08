@@ -7,11 +7,9 @@ class Scrappy {
   * Creates the browser manager instance. Which has the property of 
   * `browser` as an alias for the puppeteer instance.
   *
-  * @property
-  *
   * @private
   *
-  * @type {Browser}
+  * @property {Browser}
   *
   */
   #BrowserManager = new Browser();
@@ -20,11 +18,9 @@ class Scrappy {
   * Creates the page manager instance. Which houses all pages within the
   * puppeteer instance.
   *
-  * @property
-  *
   * @private
   *
-  * @type {Pages}
+  * @property {Pages}
   *
   */
   #PageManager = new Pages();
@@ -32,9 +28,7 @@ class Scrappy {
   /**
   * The Map of pages in the `PageManager` property.
   *
-  * @property
-  *
-  * @type {Pages.pages|undefined}
+  * @property {Pages.pages|undefined}
   *
   */
   pages;
@@ -43,17 +37,13 @@ class Scrappy {
   * The browser instance from the `BrowserManager`. Used to launch
   * a new browser.
   *
-  * @property
-  *
-  * @type {Browser.browser|undefined}
+  * @property {Browser.browser|undefined}
   *
   */
   browser;
 
   /**
   * The options you want to use for the puppeteer instance.
-  * 
-  * @property
   * 
   * @private
   *
@@ -84,7 +74,7 @@ class Scrappy {
   *
   * @param {String} id The unique id for the page you are trying to add.
   *
-  * @param {Object[]<string|string[]>} steps An array of objects with the key
+  * @param {Array<object<string[]|string>>} steps An array of objects with the key
   * of the command you are attempting to run in the puppeteer instance and the
   * value of the steps which can either be a string or an array of strings.
   *
@@ -96,7 +86,7 @@ class Scrappy {
   * @example
   *
   * import uuid from 'uuid/v4';
-  * import Scrappy from '@movement-mortgage/Scrappy';
+  * import Scrappy from '@movement-mortgage/scrappy';
   *
   * const pageId = uuid();
   * const steps = [{ goto: 'https://example.com' }, { type: [ '#browser', 'password' ] }];
@@ -129,7 +119,7 @@ class Scrappy {
   * @example
   *
   * import uuid from 'uuid/v4';
-  * import Scrappy from '@movement-mortgage/Scrappy';
+  * import Scrappy from '@movement-mortgage/scrappy';
   *
   * const pageId = uuid();
   * const steps = [{ goto: 'https://example.com' }, { type: [ '#browser', 'password' ] }];
@@ -173,7 +163,7 @@ class Scrappy {
   * @example
   *
   * import uuid from 'uuid/v4';
-  * import Scrappy from '@movement-mortgage/Scrappy';
+  * import Scrappy from '@movement-mortgage/scrappy';
   *
   * const pageId = uuid();
   * const steps = [{ goto: 'https://example.com' }, { type: [ '#browser', 'password' ] }];
@@ -227,11 +217,8 @@ class Scrappy {
   }
 }
 
-/** @exports {Pages} */
 exports.Pages = Pages;
 
-/** @exports {Browser} */
 exports.Browser = Browser;
 
-/** @exports {Scrappy} */
 exports.Scrappy = Scrappy;

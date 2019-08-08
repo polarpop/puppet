@@ -10,7 +10,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "babel src --out-dir lib --copy-files"
+    "build": "babel src --out-dir lib --copy-files",
+    "docs": "jsdoc2md src/**/*.js > api.md"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

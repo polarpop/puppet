@@ -8,10 +8,6 @@ export class Manager {
   * See https://github.com/GoogleChrome/puppeteer for further
   * details.
   *
-  * @property
-  *
-  * @type {puppeteer~Browser|null}
-  *
   */
   browser = null;
 
@@ -36,7 +32,7 @@ export class Manager {
   *
   * @example
   *
-  * import { Browser } from '@movement-mortgage/Scrappy';
+  * import { Browser } from '@movement-mortgage/scrappy';
   *
   * const browser = new Browser();
   * 
@@ -60,7 +56,7 @@ export class Manager {
   *
   * @example
   *
-  * import { Browser } from '@movement-mortgage/Scrappy';
+  * import { Browser } from '@movement-mortgage/scrappy';
   *
   * const browser = new Browser();
   * 

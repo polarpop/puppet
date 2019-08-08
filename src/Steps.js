@@ -75,9 +75,7 @@ export class Manager {
   /**
   * The map for steps in the step instance.
   *
-  * @property
-  *
-  * @type {Map<string, string[]|string>}
+  * @property {Map<string, string[]|string>}
   *
   */
   steps = new Map();
@@ -86,7 +84,7 @@ export class Manager {
   * Creates a property for this instance based on the `props` parameter,
   * and sets the steps map for this instance.
   *
-  * @param {Object[]<string, string[]|string>} steps A array of objects that have house the function
+  * @param {Array<object<string[]|string>>} steps A array of objects that have house the function
   * name and arguments of that function from puppeteer.
   *
   * @param {Object<string, string>} props A object of properties you wish to include on this instance

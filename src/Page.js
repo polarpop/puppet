@@ -5,9 +5,7 @@ export class Manager {
   /**
   * The map of pages that are used to run in the Scrappy instance.
   *
-  * @property
-  *
-  * @type {Map<string, Steps>}
+  * @property {Map<string, Steps>}
   *
   */
   pages = new Map();
@@ -30,7 +28,7 @@ export class Manager {
   *
   * @param {string} id The unique id for the page instance.
   * 
-  * @param {object[]<string[]|string>} steps An array of objects that has the value of either
+  * @param {Array<object<string[]|string>>} steps An array of objects that has the value of either
   * an array of strings or just a string.
   *
   * @param {object} props An object that houses the props that you want to give each step.
