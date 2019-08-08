@@ -1,12 +1,8 @@
 import { Manager as Browser } from './Browser';
 import { Manager as Pages } from './Page';
 
-exports.Pages = Pages;
-
-exports.Browser = Browser;
 
 class Scrappy {
-  
   /**
   * Creates the browser manager instance. Which has the property of 
   * `browser` as an alias for the puppeteer instance.
@@ -33,11 +29,35 @@ class Scrappy {
   */
   #PageManager = new Pages();
 
-  static pages;
+  /**
+  * The Map of pages in the `PageManager` property.
+  *
+  * @property
+  *
+  * @type {Pages.pages|undefined}
+  *
+  */
+  pages;
 
+  /**
+  * The browser instance from the `BrowserManager`. Used to launch
+  * a new browser.
+  *
+  * @property
+  *
+  * @type {Browser.browser|undefined}
+  *
+  */
   browser;
 
-  /** @private */
+  /**
+  * The options you want to use for the puppeteer instance.
+  * 
+  * @property
+  * 
+  * @private
+  *
+  */
   #browserOpts;
 
   constructor({ ...browserOpts }) {
@@ -158,5 +178,9 @@ class Scrappy {
     return await this.#BrowserManager.close();
   }
 }
+
+exports.Pages = Pages;
+
+exports.Browser = Browser;
 
 exports.Scrappy = Scrappy;

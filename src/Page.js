@@ -2,11 +2,9 @@ import { Manager as Steps } from './Steps';
 
 export class Manager {
 
-  static pages;
+  pages = new Map();
 
-  constructor() {
-    this.pages = new Map();
-  }
+  constructor() {}
 
   add({ id, steps, props }) {
     if (!this.pages.has(`${id}`)) {
