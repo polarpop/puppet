@@ -54,6 +54,7 @@ const VALID_STEP_METHODS = [
   'setRequestInterception',
   'setUserAgent',
   'tap',
+  'type',
   'target',
   'title',
   'url',
@@ -122,10 +123,11 @@ export class Manager {
         }
         if (Array.isArray(value)) {
           v = value.map(item => {
-            if (this.hasOwnProperty(item.toLowerCase())) {
-              return `${this[`${item.toLowerCase()}`]}`;
+            if (this[`${item}`]) {
+              let i = this[item];
+              return i;
             } else {
-              return `${item}`;
+              return item;
             }
           });
         } else if (typeof value === 'string') {

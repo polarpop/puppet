@@ -1,5 +1,6 @@
 import { Manager as Browser } from './Browser';
 import { Manager as Pages } from './Page';
+import safeEval from 'safe-eval';
 
 /** @class Scrappy */
 exports.Scrappy = class Scrappy {
@@ -149,6 +150,33 @@ exports.Scrappy = class Scrappy {
     this.#PageManager.remove({ id });
   }
 
+  async runSteps(page, steps) {
+    let errors = [];
+    if (steps instanceof Map) {
+      for (let [ key, value ] of steps.entries()) {
+        let args = value;
+        let func = key.replace(/:[0-9]+$/, '');
+        if (/evaluate/.test(key)) {
+          let fn = safeEval(args[0]);
+          args = [fn, ...args.slice(1)];
+        }
+
+        try {
+          await page[func](...args);
+        } catch(e) {
+          errors.push(e.message);
+        }
+      }
+    } else if (!steps) {
+      errors.push('You cannot have 0 steps for a page.');
+    }
+    if (errors.length > 0) {
+      return errors;
+    } else {
+      return true;
+    }
+  }
+
   /**
   * Launches the puppeteer instance from the `BrowserManager` if one does
   * not already exists. Iterates through all pages in the `PageManager` property
@@ -183,6 +211,7 @@ exports.Scrappy = class Scrappy {
   *
   */
   async run(pageId) {
+    let errors = [];
     if (!this.browser) {
       this.browser = await this.#BrowserManager.open(this.#browserOpts);
     }
@@ -192,27 +221,24 @@ exports.Scrappy = class Scrappy {
     if (!pageId) {
       for (let [ key, value ] of this.pages.entries()) {
         page = await this.browser.newPage();
-
-        for (let [ k, v ] of value.steps.entries()) {
-          try {
-            await page[k.replace(/:[0-9]+$/, '')](...v);
-          } catch(e) {}
+        
+        let runs = await this.runSteps(page, value.steps);
+        
+        if (typeof runs === 'array') {
+          errors = [...errors, ...runs];
         }
       }
     } else if (this.pages.has(pageId)) {
-
       page = await this.browser.newPage();
-
       let instance = this.pages.get(`${pageId}`);
-      for ( let [ ky, vl ] of instance.steps.entries()) {
-        try {
-          await page[ky.replace(/:[0-9]+$/, '')](...vl);
-        } catch(e) {}
+      let single = await this.runSteps(page, instance.steps);
+      if (typeof single === 'array') {
+        errors = [...errors, ...runs];
       }
     } else {
       throw new Error(`The page ${pageId} does not exist, please make sure you added the page.`);
     }
-
+    console.log(errors);
     return await this.#BrowserManager.close();
   }
 }
