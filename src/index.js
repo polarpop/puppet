@@ -1,55 +1,30 @@
-import { Manager as Browser } from './Browser';
-import { Manager as Pages } from './Page';
+import { Manager as Steps } from './Steps';
+import { EventEmitter } from 'events';
 import safeEval from 'safe-eval';
+import puppeteer from 'puppeteer';
 
-/** @class Scrappy */
-exports.Scrappy = class Scrappy {
-  /**
-  * Creates the browser manager instance. Which has the property of 
-  * `browser` as an alias for the puppeteer instance.
-  *
-  * @private
-  *
-  * @property {Browser}
-  *
-  */
-  #BrowserManager = new Browser();
+
+exports.Scrappy = class Scrappy extends EventEmitter {
 
   /**
-  * Creates the page manager instance. Which houses all pages within the
-  * puppeteer instance.
-  *
-  * @private
-  *
-  * @property {Pages}
-  *
+  * The Map of pages in this instance.
   */
-  #PageManager = new Pages();
-
-  /**
-  * The Map of pages in the `PageManager` property.
-  *
-  * @property {Pages.pages|undefined}
-  *
-  */
-  pages;
+  pages = new Map();
 
   /**
   * The browser instance from the `BrowserManager`. Used to launch
   * a new browser.
-  *
-  * @property {Browser.browser|undefined}
-  *
   */
   browser;
 
   /**
   * The options you want to use for the puppeteer instance.
-  * 
-  * @private
-  *
   */
-  #browserOpts = {};
+  options = { headless: false };
+
+  isRunning = false;
+
+  currentlyRunning = new Map();
 
   /**
   * Manages the puppeteer browser instance, can add pages, can delete pages,
@@ -57,16 +32,63 @@ exports.Scrappy = class Scrappy {
   *
   * @constructor
   *
-  * @params {Object} browserOpts The options used for the puppeteer launch instance. See https://github.com/GoogleChrome/puppeteer
+  * @params {Object} opts The options used for the puppeteer launch instance. See https://github.com/GoogleChrome/puppeteer
   * for further details
   *
   * @returns {void}
   *
   */
-  constructor({ ...browserOpts }) {
-    this.#browserOpts = browserOpts;
-    this.pages = this.#PageManager.pages;
-    this.browser = this.#BrowserManager.browser;
+  constructor(opts) {
+    super();
+
+    this.options = opts || { headless: false };
+    
+    this.once('end', this.#onBrowserClose.bind(this));
+    this.once('start', this.#onBrowserOpen.bind(this));
+
+    this.on('page-start', this.#onPageStart.bind(this));
+    this.on('page-error', this.#onPageError.bind(this));
+    this.on('page-data', this.#onPageData.bind(this));
+    this.on('page-end', this.#onPageEnd.bind(this));
+  }
+
+  #onBrowserClose = async () => {
+    if (this.browser) {
+      await this.browser.close();
+      this.browser = null;
+      this.isRunning = false;
+    }
+  };
+
+  #onBrowserOpen = async () => {
+    if (this.isRunning) return;
+    
+    this.isRunning = true;
+  };
+
+  #onPageStart = async ({ page, steps, id }) => {
+    this.currentlyRunning.set(`${id}`, page);
+    await this.runSteps(id, page, steps);
+  };
+
+  #onPageEnd = async (id, errors) => {
+    if (this.currentlyRunning.has(`${id}`)) {
+      let page = this.currentlyRunning.get(`${id}`);
+      await page.close();
+      this.currentlyRunning.delete(`${id}`);
+    }
+
+    if (this.currentlyRunning.size === 0) {
+      this.emit('end', errors);
+    }
+  };
+
+  #onPageError = (id, err) => {
+    this.emit('error', { from: id, error: err });
+  };
+
+  #onPageData = ({ id, data }) => {
+    this.emit('data', { from: id,  results: data });
   }
 
   /**
@@ -106,7 +128,9 @@ exports.Scrappy = class Scrappy {
   *
   */
   addPage(id, steps, props) {
-    this.#PageManager.add({ id, steps, props });
+    if (!this.pages.has(`${id}`) && !this.isRunning) {
+      this.pages.set(`${id}`, new Steps(steps, props));
+    }
   }
 
   /**
@@ -147,10 +171,12 @@ exports.Scrappy = class Scrappy {
   *
   */
   removePage(id) {
-    this.#PageManager.remove({ id });
+    if (this.pages.has(id) && !this.isRunning) {
+      this.pages.delete(id);
+    };
   }
 
-  async runSteps(page, steps) {
+  async runSteps(id, page, steps) {
     let errors = [];
     if (steps instanceof Map) {
       for (let [ key, value ] of steps.entries()) {
@@ -162,7 +188,10 @@ exports.Scrappy = class Scrappy {
         }
 
         try {
-          await page[func](...args);
+          let results = await page[func](...args);
+          if (/evaluate/.test(key)) {
+            this.emit('page-data', { id, data: results })
+          }
         } catch(e) {
           errors.push(e.message);
         }
@@ -170,12 +199,28 @@ exports.Scrappy = class Scrappy {
     } else if (!steps) {
       errors.push('You cannot have 0 steps for a page.');
     }
+    let hasErrors;
     if (errors.length > 0) {
-      return errors;
-    } else {
-      return true;
+      hasErrors = errors;
     }
+    this.emit('page-end', id, hasErrors);
   }
+
+  #runMultiple = async () => {
+    for (let [ key, value ] of this.pages.entries()) {
+      let page = await this.browser.newPage();
+      this.emit('page-start', { page, steps: value.steps, id: key });
+    }
+    return Promise.resolve(true);
+  };
+
+  #runSingle = async (id) => {
+    if (this.pages.has(id)) {
+      let page = await this.browser.newPage();
+      let instance = this.pages.get(id);
+      this.emit('page-start', { page, steps: instance.steps, id });
+    }
+  };
 
   /**
   * Launches the puppeteer instance from the `BrowserManager` if one does
@@ -211,38 +256,14 @@ exports.Scrappy = class Scrappy {
   *
   */
   async run(pageId) {
-    let errors = [];
-    if (!this.browser) {
-      this.browser = await this.#BrowserManager.open(this.#browserOpts);
-    }
-
-    let page;
-
+    this.browser = await puppeteer.launch(this.options);
+    this.emit('start');
     if (!pageId) {
-      for (let [ key, value ] of this.pages.entries()) {
-        page = await this.browser.newPage();
-        
-        let runs = await this.runSteps(page, value.steps);
-        
-        if (typeof runs === 'array') {
-          errors = [...errors, ...runs];
-        }
-      }
-    } else if (this.pages.has(pageId)) {
-      page = await this.browser.newPage();
-      let instance = this.pages.get(`${pageId}`);
-      let single = await this.runSteps(page, instance.steps);
-      if (typeof single === 'array') {
-        errors = [...errors, ...runs];
-      }
+      await this.#runMultiple();
     } else {
-      throw new Error(`The page ${pageId} does not exist, please make sure you added the page.`);
+      await this.#runSingle(pageId)
     }
-    console.log(errors);
-    return await this.#BrowserManager.close();
+
+    return Promise.resolve(true);
   }
 }
-
-exports.Pages = Pages;
-
-exports.Browser = Browser;
