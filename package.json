@@ -1,7 +1,7 @@
 {
   "name": "@movement-mortgage/scrappy",
   "description": "A node.js implementation for performing web automation tasks using puppeteer",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -10,9 +10,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "babel src --out-dir lib --copy-files",
+    "build": "babel src --out-dir lib --copy-files --no-comments",
     "docs": "jsdoc2md src/**/*.js > api.md",
-    "pre-publish": "set NODE_ENV=production&& babel src --out-dir lib --copy-files"
+    "pre-publish": "set NODE_ENV=production&& babel src --out-dir lib --copy-files --no-comments"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -27,13 +27,10 @@
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-syntax-import-meta": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/register": "^7.5.5",
     "babel-plugin-transform-remove-console": "^6.9.4"
   },
   "dependencies": {
-    "@babel/runtime": "^7.5.5",
     "puppeteer": "^1.19.0",
     "safe-eval": "^0.4.1"
   },
