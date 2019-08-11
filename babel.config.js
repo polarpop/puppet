@@ -1,16 +1,6 @@
 module.exports = function(api) {
   api.cache(true);
   let plugins = [
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        "absoluteRuntime": false,
-        "corejs": false,
-        "helpers": true,
-        "regenerator": true,
-        "useESModules": false
-      }
-    ],
     "@babel/plugin-proposal-function-sent",
     "@babel/plugin-proposal-export-namespace-from",
     "@babel/plugin-proposal-numeric-separator",
