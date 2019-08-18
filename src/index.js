@@ -1,7 +1,10 @@
 import { Manager as Steps } from './Steps';
+import utils from './utils';
 import { EventEmitter } from 'events';
 import safeEval from 'safe-eval';
 import puppeteer from 'puppeteer';
+
+exports.utils = utils;
 
 
 exports.Scrappy = class Scrappy extends EventEmitter {
