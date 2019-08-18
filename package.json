@@ -17,6 +17,10 @@
     "docs": "jsdoc2md src/**/*.js > api.md",
     "pre-publish": "set NODE_ENV=production&& babel src --out-dir lib --copy-files --no-comments"
   },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
