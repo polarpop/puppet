@@ -5,10 +5,8 @@ export const run = async (instance) => {
   let start = new Date();
   let opts = {
     headless: instance.headless,
-    multiple: instance.multiple,
     noOutput: instance.noOutput,
     excludedPages: instance.excludedPages,
-    runs: instance.runs,
     pagesDir: utils.getPagesDir(instance.pagesDir),
   };
   try {
@@ -41,17 +39,10 @@ export const run = async (instance) => {
         utils.commandEmitter.emit('error', err, false);
       });
       for (let [ key, value ] of pages.entries()) {
-        if (!opts.multiple) {
-          await scrappy.addPage(`${key}`, value);
-          await scrappy.run(`${key}`);
-          await scrappy.removePage(`${key}`);
-        } else {
-          await scrappy.addPage(`${key}`, value);
-        }
+        await scrappy.addPage(`${key}`, value);
       }
-      if (opts.multiple) {
-        await scrappy.run();
-      }
+      
+      await scrappy.run();
     }
     
   } catch (e) {
