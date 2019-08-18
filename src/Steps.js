@@ -94,7 +94,7 @@ export class Manager {
   * @returns {void}
   *
   */
-  constructor([ ...steps ], { ...props }) {
+  constructor([ ...steps ], props={}) {
     if ((Object.keys(props)).length > 0) {
       let entries = Object.entries(props);
 

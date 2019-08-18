@@ -1,11 +1,13 @@
 import { Manager as Steps } from './Steps';
 import utils from './utils';
+import * as commands from './commands';
 import { EventEmitter } from 'events';
 import safeEval from 'safe-eval';
 import puppeteer from 'puppeteer';
 
 exports.utils = utils;
 
+exports.commands = commands;
 
 exports.Scrappy = class Scrappy extends EventEmitter {
 
@@ -71,7 +73,7 @@ exports.Scrappy = class Scrappy extends EventEmitter {
 
   #onPageStart = async ({ page, steps, id }) => {
     this.currentlyRunning.set(`${id}`, page);
-    await this.runSteps(id, page, steps);
+    return await this.runSteps(id, page, steps);
   };
 
   #onPageEnd = async (id, errors) => {
@@ -84,6 +86,7 @@ exports.Scrappy = class Scrappy extends EventEmitter {
     if (this.currentlyRunning.size === 0) {
       this.emit('end', errors);
     }
+    return Promise.resolve();
   };
 
   #onPageError = (id, err) => {
@@ -130,7 +133,7 @@ exports.Scrappy = class Scrappy extends EventEmitter {
   * scrappy.run(pageId) 
   *
   */
-  addPage(id, steps, props) {
+  addPage(id, steps, props={}) {
     if (!this.pages.has(`${id}`) && !this.isRunning) {
       this.pages.set(`${id}`, new Steps(steps, props));
     }
@@ -266,7 +269,5 @@ exports.Scrappy = class Scrappy extends EventEmitter {
     } else {
       await this.#runSingle(pageId)
     }
-
-    return Promise.resolve(true);
   }
 }
