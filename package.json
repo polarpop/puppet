@@ -40,7 +40,7 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "commander": "^7.0.0",
-    "puppeteer": "^1.19.0",
+    "puppeteer": "^8.0.0",
     "safe-eval": "^0.4.1",
     "uuid": "^3.3.2"
   },
