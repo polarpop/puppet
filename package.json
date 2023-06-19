@@ -42,7 +42,7 @@
     "commander": "^7.0.0",
     "puppeteer": "^9.0.0",
     "safe-eval": "^0.4.1",
-    "uuid": "^8.0.0"
+    "uuid": "^9.0.0"
   },
   "bugs": {
     "url": "https://github.com/polarpop/movement-scrappers/issues"
